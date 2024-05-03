@@ -22,6 +22,9 @@ async def get_book(id: int):
 
     with Session() as session:
         book = session.get(Book, id)
+        if not book:
+            raise HTTPException(status_code=404,
+                                detail=f"No data found for book with Id {id}")
 
     return book
 
@@ -29,6 +32,7 @@ async def get_book(id: int):
 @app.post("/books")
 async def create_book(book: BookModel):
     """Create new book and add to the collection"""
+
     with Session() as session:
         new_book = Book(title=book.title,
                         author=book.author,
@@ -80,4 +84,4 @@ async def delete_book(id: int):
         session.delete(book)
         session.commit()
 
-    return {f"Book{id}": f"Book with {id} deleted"}
+    return {f"Message": f"Book with {id} deleted"}
